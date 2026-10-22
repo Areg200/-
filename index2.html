@@ -1,0 +1,732 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Աշխարհի վերաձևում</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+Armenian:wght@400;500;600&family=Noto+Serif+Armenian:wght@500;700;800&display=swap">
+<style>
+/* Layout concept: a survey sheet. A schematic map of the two fronts leads every act; ruled option cards, mono stamps, ochre = Western Front, steel blue = Eastern Front. */
+:root{
+  --paper:#E8EDEF;
+  --paper-2:#F5F8F9;
+  --ink:#13212B;
+  --ink-soft:#4A5C68;
+  --rule:#C3CFD6;
+  --accent:#B7791F;
+  --accent-ink:#1A1204;
+  --front2:#2B6A8F;
+  --sea:#CFDDE5;
+  --land:#F5F8F9;
+  --good:#2F7D4F;
+  --bad:#B3322B;
+  --meter-bg:#D3DDE3;
+  --f-display:'Noto Serif Armenian',Georgia,'Times New Roman',serif;
+  --f-body:'Noto Sans Armenian',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0E1A22;--paper-2:#152531;--ink:#E6EDF0;--ink-soft:#9DB0BB;--rule:#2A3E4B;
+    --accent:#E0B04F;--accent-ink:#1A1204;--front2:#6DB6DB;--sea:#0A141B;--land:#1A2E3B;
+    --good:#58B97D;--bad:#E5776F;--meter-bg:#223644;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0E1A22;--paper-2:#152531;--ink:#E6EDF0;--ink-soft:#9DB0BB;--rule:#2A3E4B;
+  --accent:#E0B04F;--accent-ink:#1A1204;--front2:#6DB6DB;--sea:#0A141B;--land:#1A2E3B;
+  --good:#58B97D;--bad:#E5776F;--meter-bg:#223644;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font:400 16px/1.6 var(--f-body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:20px 56px;
+}
+.wrap{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:18px;min-width:0}
+h1,h2,h3{font-family:var(--f-display);margin:0;line-height:1.2;text-wrap:balance}
+h1{font-size:clamp(2rem,9vw,3.1rem);font-weight:800;letter-spacing:-.01em}
+h2{font-size:1.45rem;font-weight:700}
+h3{font-size:1.1rem;font-weight:700}
+p{margin:0}
+.label{font:500 12px/1.4 var(--f-mono);letter-spacing:.06em;color:var(--ink-soft)}
+.soft{color:var(--ink-soft)}
+.sheet{
+  border:1.5px solid var(--ink);
+  background-color:var(--paper-2);
+  background-image:linear-gradient(var(--rule) 1px,transparent 1px),linear-gradient(90deg,var(--rule) 1px,transparent 1px);
+  background-size:28px 28px;
+  padding:20px 18px 18px;
+  display:flex;flex-direction:column;gap:12px;
+}
+.card{background:var(--paper-2);border:1.5px solid var(--rule);padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.card.ink{border-color:var(--ink)}
+/* map */
+.mapbox{border:1.5px solid var(--ink);background:var(--sea);line-height:0}
+.map{display:block;width:100%;height:auto;max-height:360px}
+.map .sea{fill:var(--sea)}
+.map .land{fill:var(--land);stroke:var(--ink-soft);stroke-width:1;vector-effect:non-scaling-stroke}
+.map .grat{stroke:var(--rule);stroke-width:1;vector-effect:non-scaling-stroke;opacity:.7}
+.map text{font-family:var(--f-body);font-size:var(--fs);paint-order:stroke;stroke:var(--land);stroke-width:3px;stroke-linejoin:round;fill:var(--ink);line-height:1}
+.map text.cl{fill:var(--ink-soft);text-anchor:middle;font-weight:500}
+.map text.cl.post{fill:var(--ink);font-weight:600}
+.map text.gt{font-family:var(--f-mono);fill:var(--ink-soft);stroke:none;font-size:calc(var(--fs) * .8)}
+.fl{fill:none;stroke-width:3.5;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:0;vector-effect:non-scaling-stroke}
+.fl.fw{stroke:var(--accent)}
+.fl.fe{stroke:var(--front2)}
+.fl.dim{opacity:.3}
+.fl.anim{animation:draw 1.5s ease-out}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+.dot{stroke:var(--land);stroke-width:2px;vector-effect:non-scaling-stroke}
+.dot.w{fill:var(--accent)}
+.dot.e{fill:var(--front2)}
+.dot.hit{fill:var(--ink);stroke:var(--land)}
+.dot.match{fill:var(--ink)}
+.dot.miss{fill:var(--land);stroke:var(--ink);stroke-width:2.5px}
+.mk{cursor:pointer}
+.mk .ring{fill:none;stroke:var(--ink);stroke-width:2px;vector-effect:non-scaling-stroke}
+.hitarea{fill:transparent}
+.pulse{fill:none;stroke:var(--ink);stroke-width:2px;vector-effect:non-scaling-stroke;transform-box:fill-box;transform-origin:center;animation:pulse 1.8s ease-out infinite}
+@keyframes pulse{from{transform:scale(.6);opacity:1}to{transform:scale(2.2);opacity:0}}
+.legend-row{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--ink-soft)}
+.lg{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:20px;height:4px}
+.sw.w{background:var(--accent)}
+.sw.e{background:var(--front2)}
+.sw.d{width:10px;height:10px;border-radius:50%;background:var(--ink)}
+.sw.o{width:10px;height:10px;border-radius:50%;border:2px solid var(--ink)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{
+  appearance:none;cursor:pointer;font:500 14px/1.2 var(--f-mono);padding:10px 14px;
+  background:transparent;color:var(--ink);border:1.5px solid var(--ink);border-radius:4px;
+}
+.tab[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.acts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.acts li{display:grid;grid-template-columns:92px 1fr;gap:14px;padding:12px 0;border-top:1px solid var(--rule)}
+.acts li:last-child{border-bottom:1px solid var(--rule)}
+.acts .y{font:500 13px/1.5 var(--f-mono);padding-top:3px}
+.acts b{font-family:var(--f-display);font-weight:700;display:block}
+dl.legend{margin:0;display:flex;flex-direction:column;gap:8px}
+dl.legend div{display:grid;grid-template-columns:140px 1fr;gap:12px}
+dl.legend dt{font-weight:600}
+dl.legend dd{margin:0;color:var(--ink-soft)}
+@media (max-width:420px){
+  dl.legend div{grid-template-columns:1fr;gap:0}
+}
+.btn{
+  appearance:none;border:0;cursor:pointer;font:600 16px/1.3 var(--f-body);
+  padding:15px 20px;background:var(--accent);color:var(--accent-ink);width:100%;
+  border-radius:4px;
+}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+.btn:hover{filter:brightness(1.06)}
+.btn:focus-visible,.opt:focus-visible,summary:focus-visible,.tab:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.mk:focus-visible{outline:none}
+.mk:focus-visible .ring{stroke-width:4px}
+.meters{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+.m-top{display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:500}
+.m-top b{font:500 13px/1.6 var(--f-mono);font-variant-numeric:tabular-nums}
+.bar{height:8px;background:var(--meter-bg);margin-top:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .8s cubic-bezier(.2,.7,.2,1)}
+.progress{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{
+  appearance:none;text-align:left;cursor:pointer;color:var(--ink);
+  background:var(--paper-2);border:1.5px solid var(--rule);border-radius:4px;
+  padding:14px 16px;display:grid;grid-template-columns:30px 1fr;gap:12px;font:inherit;min-height:60px;
+}
+.opt:hover{border-color:var(--ink)}
+.opt .k{font:700 1.15rem/1.3 var(--f-display);color:var(--ink-soft)}
+.opt strong{display:block;font-weight:600}
+.opt span.d{display:block;color:var(--ink-soft);font-size:14.5px;line-height:1.5;margin-top:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:500 13px/1.2 var(--f-mono);padding:6px 9px;border:1.5px solid currentColor;white-space:nowrap}
+.chip.up{color:var(--good)}
+.chip.down{color:var(--bad)}
+.tag{display:inline-block;font:500 12px/1.3 var(--f-mono);padding:4px 8px;border:1.5px solid var(--ink);align-self:flex-start}
+.tag.match{background:var(--ink);color:var(--paper)}
+.verdict{font-family:var(--f-display);font-weight:800;font-size:clamp(1.5rem,7vw,2.1rem);line-height:1.15}
+details{border-top:1px solid var(--rule);padding:10px 0}
+details:last-of-type{border-bottom:1px solid var(--rule)}
+summary{cursor:pointer;font-weight:600;list-style-position:inside}
+details ul{margin:10px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
+.fine{font-size:13.5px;line-height:1.55;color:var(--ink-soft)}
+@media (prefers-reduced-motion:reduce){
+  .fl.anim{animation:none}
+  .pulse{animation:none;opacity:.6}
+  .bar i{transition:none}
+}
+</style>
+
+<main class="wrap" id="app" aria-live="polite"></main>
+
+<script>
+"use strict";
+
+/* ---------- data ---------- */
+var METERS = [
+  {k:"s", n:"Կայունություն"},
+  {k:"j", n:"Արդարություն"},
+  {k:"p", n:"Բարգավաճում"},
+  {k:"c", n:"Համաձայնություն"}
+];
+var LETTERS = ["Ա","Բ","Գ"];
+
+/* map projection: lon -5..40, lat 42..62 -> 720 x 500 */
+var VB = {full:[0,0,720,500], west:[40,190,260,230], east:[240,40,420,380]};
+function P(lon, lat){ return [(lon+5)*16, (62-lat)*25]; }
+function pts(a){
+  return a.map(function(p){ var q = P(p[0],p[1]); return q[0].toFixed(1)+","+q[1].toFixed(1); }).join(" ");
+}
+var LAND = [[-5,42],[-5,43.4],[-1.8,43.4],[-1.2,44.7],[-1.2,46.0],[-2.2,47.2],[-4.7,48.0],[-4.6,48.6],[-1.6,48.7],[-1.6,49.7],[0.2,49.4],[1.6,50.2],[1.8,51.0],[3.4,51.4],[4.2,52.2],[4.8,53.0],[7.0,53.5],[8.7,53.9],[8.6,55.0],[8.2,56.0],[8.2,57.0],[10.6,57.6],[10.3,56.0],[9.8,54.9],[10.9,54.0],[12.4,54.4],[14.2,53.9],[16.5,54.5],[18.6,54.8],[19.9,54.4],[21.0,55.2],[21.1,55.7],[21.0,56.5],[22.6,57.75],[23.5,57.35],[24.1,57.0],[24.4,57.9],[24.5,58.4],[23.6,58.7],[24.7,59.45],[26.5,59.6],[28.2,59.45],[30.0,59.9],[30.3,62],[40,62],[40,46.5],[38.0,46.9],[36.6,45.3],[35.2,45.0],[33.6,44.4],[32.6,45.4],[31.2,46.6],[30.0,45.5],[29.6,44.8],[28.6,44.0],[28.0,42.0]];
+var ADRIA = [[12.3,45.3],[13.6,45.7],[14.3,44.9],[15.2,44.0],[16.5,43.2],[17.8,42.7],[18.5,42.1],[18.6,42.0],[14.2,42.0],[14.0,42.6],[13.6,43.6],[12.3,44.5]];
+
+var FRONTS = {
+  1914:{
+    w:[[2.75,51.15],[2.9,50.85],[2.88,50.68],[2.77,50.29],[2.65,50.0],[3.0,49.58],[3.3,49.38],[4.03,49.25],[5.0,49.0],[5.4,49.15],[5.55,48.9],[6.2,48.7],[7.0,48.2],[7.35,47.5]],
+    e:[[21.0,54.6],[20.5,53.7],[20.0,52.4],[20.7,51.0],[21.0,50.0],[22.5,49.2],[24.0,48.5],[25.9,48.3]]
+  },
+  1916:{
+    w:[[2.75,51.15],[2.9,50.85],[2.88,50.68],[2.77,50.29],[2.65,50.0],[3.0,49.58],[3.3,49.38],[4.03,49.25],[5.0,49.0],[5.4,49.15],[5.55,48.9],[6.2,48.7],[7.0,48.2],[7.35,47.5]],
+    e:[[23.6,57.1],[26.5,55.9],[25.0,54.6],[26.1,52.1],[25.7,50.4],[25.6,49.6],[25.9,48.3],[26.8,47.0],[27.2,45.7],[29.6,45.2]]
+  },
+  1918:{
+    w:[[3.7,51.1],[3.9,50.45],[4.5,50.0],[5.0,49.7],[5.7,49.4],[6.1,49.1],[6.9,48.6],[7.35,47.6]],
+    e:[[28.2,59.4],[28.5,57.7],[30.5,55.5],[31.2,52.5],[34.5,50.5],[37.5,47.5]]
+  }
+};
+var YEAR_TEXT = {
+  1914:"1914 թվականի վերջին արևմտյան ճակատը կայունացավ Հյուսիսային ծովից մինչև Շվեյցարիա։ Արևելքում ռուսական բանակը գործում էր Լեհաստանի և Գալիցիայի շուրջ։",
+  1916:"1915–1916 թվականներին արևմուտքում գիծը գրեթե չփոխվեց։ Արևելքում Գորլիցե–Տարնովի ճեղքումից հետո ռուսական բանակը նահանջեց, իսկ 1916-ի վերջին Ռումինիան պարտվեց։",
+  1918:"1918 թվականի նոյեմբերի 11-ի զինադադարով արևմտյան ճակատում կրակը դադարեց։ Արևելքում Բրեստ-Լիտովսկի հաշտությունից հետո գերմանական զորքերը ավելի խորը մտան Ռուսաստանի տարածք։"
+};
+
+var COUNTRIES_PRE = [
+  {n:"Ֆրանսիա", lon:1.5, lat:47.0},
+  {n:"Գերմանական կայսրություն", lon:10.5, lat:51.2},
+  {n:"Ավստրո-Հունգարիա", lon:17.5, lat:47.2},
+  {n:"Ռուսական կայսրություն", lon:31.0, lat:54.0},
+  {n:"Ռումինիա", lon:25.0, lat:45.7}
+];
+var COUNTRIES_POST = [
+  {n:"Ֆրանսիա", lon:1.5, lat:47.0},
+  {n:"Գերմանիա", lon:10.0, lat:51.0},
+  {n:"Ավստրիա", lon:14.0, lat:47.4},
+  {n:"Չեխոսլովակիա", lon:16.0, lat:49.6},
+  {n:"Հունգարիա", lon:19.5, lat:47.0},
+  {n:"Լեհաստան", lon:20.0, lat:52.0},
+  {n:"Լիտվա", lon:23.8, lat:55.3},
+  {n:"Լատվիա", lon:25.0, lat:56.8},
+  {n:"Էստոնիա", lon:25.5, lat:58.7},
+  {n:"ԽՍՀՄ", lon:32.0, lat:54.5},
+  {n:"Ռումինիա", lon:25.0, lat:45.7}
+];
+
+var MARKS = [
+  {n:"Մառն", f:"w", lon:3.6, lat:48.95, lab:[10,6,"start"],
+   t:"Մառնի ճակատամարտ (սեպտեմբեր 1914)։ Ֆրանսիական և բրիտանական զորքերը կանգնեցրին գերմանական առաջխաղացումը դեպի Փարիզ և փլուզեցին արագ հաղթանակի հույսը։"},
+  {n:"Իպր", f:"w", lon:2.89, lat:50.85, lab:[-10,-2,"end"],
+   t:"Իպր (1914–1918)։ Այս շրջանում տեղի ունեցան մի քանի ճակատամարտեր։ 1915 թվականին գերմանացիները այստեղ առաջին անգամ լայնորեն կիրառեցին թունավոր գազ։"},
+  {n:"Սոմմա", f:"w", lon:2.7, lat:49.95, lab:[-10,-4,"end"],
+   t:"Սոմմա (հուլիս–նոյեմբեր 1916)։ Բրիտանական և ֆրանսիական հարձակումը երկու կողմից տվեց ավելի քան մեկ միլիոն զոհ և վիրավոր։ Այստեղ առաջին անգամ կիրառվեցին տանկեր։"},
+  {n:"Կոմպյեն", f:"w", lon:2.9, lat:49.4, lab:[-10,14,"end"],
+   t:"Կոմպյեն (11 նոյեմբերի 1918)։ Այստեղ երկաթուղային վագոնում ստորագրվեց զինադադարը, և առավոտյան ժամը 11-ին կրակը դադարեց։"},
+  {n:"Վերդեն", f:"w", lon:5.4, lat:49.16, lab:[10,-4,"start"],
+   t:"Վերդեն (փետրվար–դեկտեմբեր 1916)։ Գերմանիան փորձեց ճեղքել ֆրանսիական պաշտպանությունը։ Ճակատամարտը տևեց ամիսներ և երկու կողմից խլեց մոտ 700 հազար զոհի և վիրավորի։"},
+  {n:"Տաննենբերգ", f:"e", lon:20.1, lat:53.5, lab:[-10,-6,"end"],
+   t:"Տաննենբերգ (օգոստոս 1914)։ Գերմանական բանակը՝ Հինդենբուրգի և Լյուդենդորֆի գլխավորությամբ, ջախջախեց ռուսական երկրորդ բանակը Արևելյան Պրուսիայում։"},
+  {n:"Գորլիցե", f:"e", lon:21.1, lat:49.7, lab:[-10,6,"end"],
+   t:"Գորլիցե–Տարնով (մայիս 1915)։ Գերմանա-ավստրիական ճեղքումը ստիպեց ռուսական բանակին նահանջել Լեհաստանից։ Վարշավան գրավվեց օգոստոսին։"},
+  {n:"Բրեստ-Լիտովսկ", f:"e", lon:23.7, lat:52.1, lab:[10,-6,"start"],
+   t:"Բրեստ-Լիտովսկ (մարտ 1918)։ Խորհրդային Ռուսաստանը հաշտություն կնքեց Կենտրոնական տերությունների հետ և կորցրեց Լեհաստանը, Բալթյան երկրները և Ուկրաինան։ Պայմանագիրը չեղարկվեց նոյեմբերին։"},
+  {n:"Լուցկ", f:"e", lon:25.3, lat:50.75, lab:[10,-2,"start"],
+   t:"Բրուսիլովի հարձակում (հունիս 1916)։ Ռուսական բանակը խորը ճեղքեց ավստրո-հունգարական ճակատը։ Հաջողությունը թանկ նստեց, իսկ Ավստրո-Հունգարիայի բանակը լրջորեն թուլացավ։"},
+  {n:"Բուխարեստ", f:"e", lon:26.1, lat:44.4, lab:[-10,6,"end"],
+   t:"Բուխարեստ (դեկտեմբեր 1916)։ Ռումինիան միացավ դաշնակիցներին 1916 թվականի օգոստոսին, բայց շուտով պարտվեց, և մայրաքաղաքը գրավվեց։"}
+];
+
+var ACTS = [
+  {
+    name:"Արևմտյան Եվրոպա", front:"Արևմտյան ճակատ", view:"west", year:1916, focus:"west", role:"Խորհրդական Փարիզի համաժողովում",
+    intro:"Արևմտյան ճակատը ձգվում էր Հյուսիսային ծովից մինչև Շվեյցարիա և 1915–1917 թվականներին գրեթե չփոխվեց։ Այստեղ պատերազմը դարձավ խրամատային։ Փարիզում պետք է որոշել Ֆրանսիայի և Գերմանիայի սահմանը, վճարումները և Բելգիայի հարցը։",
+    result:"Ալզասի և Սաարի հարցերում սահմանը փոխվեց, բայց ծանր փոխհատուցումները և Հռենոսի շրջանի կարգավիճակը լարվածություն թողեցին։ 1923 թվականին Ֆրանսիան և Բելգիան օկուպացրին Ռուրը՝ վճարումների ուշացման պատճառով, ինչը խորացրեց ճգնաժամը։",
+    decisions:[
+      {
+        title:"Ալզաս–Լոռենի հարցը", ctx:"1871 թվականին Գերմանիան Ֆրանսիայից վերցրել էր Ալզասն ու Լոռենը։ Ֆրանսիան պահանջում է վերադարձ, Գերմանիան՝ պահպանել։",
+        loc:{lon:7.6,lat:48.4,name:"Ալզաս–Լոռեն",lab:[10,6,"start"]},
+        options:[
+          {t:"Վերադարձնել Ֆրանսիային", d:"Վերականգնել 1871 թվականից առաջվա սահմանը՝ առանց հանրաքվեի։", fx:{s:5,j:5,p:0,c:5}, real:true,
+           note:"Այսպես էլ եղավ։ Վերսալի պայմանագրով Ալզասը և Լոռենը վերադարձան Ֆրանսիային, հանրաքվե չանցկացվեց։ Ֆրանսիայում դա համարվեց արդարության վերականգնում, իսկ Գերմանիայում՝ կորուստ։"},
+          {t:"Հանրաքվե", d:"Բնակիչներին հարցնել, թե որ պետության մեջ են ուզում ապրել։", fx:{s:0,j:10,p:0,c:-5},
+           note:"Հանրաքվե չանցկացվեց. ֆրանսիացիները համարում էին, որ 1871 թվականին բնակիչներից ոչինչ չէին հարցրել, ուստի հարցը նորից քվեարկության դնելը անիմաստ է։"},
+          {t:"Թողնել Գերմանիային", d:"Պահպանել ներկա սահմանը կայունության համար։", fx:{s:-5,j:-10,p:0,c:-10},
+           note:"Ֆրանսիան դրան չէր համաձայնի։ Այս հարցը պատերազմի հիմնական պատճառներից մեկն էր ֆրանսիական հասարակության համար։"}
+        ]
+      },
+      {
+        title:"Հռենոսի շրջանը և Սաարը", ctx:"Ֆրանսիան երաշխիք է ուզում, որ Գերմանիան այլևս չի հարձակվի արևմուտքից։ Սաարի ածխահանքերը ֆրանսիական ավերված հանքերի փոխհատուցումն են։",
+        loc:{lon:7.0,lat:50.7,name:"Հռենոս և Սաար",lab:[10,6,"start"]},
+        options:[
+          {t:"Առանձնացնել Հռենոսի ձախ ափը", d:"Ստեղծել առանձին պետություն Ֆրանսիայի ազդեցության տակ։", fx:{s:-5,j:-10,p:-5,c:-10},
+           note:"Նման պահանջ ներկայացրին ֆրանսիացի զինվորականներ, սակայն Բրիտանիան և ԱՄՆ-ը դեմ էին։"},
+          {t:"Ապառազմականացում և ժամանակավոր օկուպացիա", d:"Հռենոսի շրջանը ապառազմականացնել և զորքեր պահել 15 տարի, իսկ Սաարը հանձնել Ազգերի լիգայի վերահսկմանը։", fx:{s:10,j:0,p:0,c:10}, real:true,
+           note:"Այսպես էլ եղավ։ Սաարը 15 տարի կառավարեց Ազգերի լիգան, հանքերը անցան Ֆրանսիային, իսկ 1935 թվականի հանրաքվեով բնակիչները քվեարկեցին Գերմանիային վերադառնալու օգտին։"},
+          {t:"Առանց փոփոխության", d:"Թողնել Հռենոսի շրջանը և Սաարը Գերմանիայի վերահսկողության տակ։", fx:{s:-10,j:0,p:5,c:-10},
+           note:"Ֆրանսիան դրան չէր համաձայնի առանց լուրջ անվտանգության երաշխիքների։"}
+        ]
+      },
+      {
+        title:"Գերմանիայի վճարումները", ctx:"Արևմտյան ճակատի ավերված շրջանները՝ Հյուսիսային Ֆրանսիան և Բելգիան, պահանջում են փոխհատուցում։",
+        loc:{lon:2.13,lat:48.8,name:"Վերսալ",lab:[-10,6,"end"]},
+        options:[
+          {t:"Լիակատար պատասխանատվություն", d:"Գերմանիան ընդունում է մեղքը և վճարում է հսկայական փոխհատուցում։", fx:{s:-5,j:5,p:-15,c:5}, real:true,
+           note:"Վերսալի պայմանագրի 231-րդ հոդվածը պատերազմի կորուստների համար պատասխանատու էր համարում Գերմանիային։ 1921 թվականին փոխհատուցումը որոշվեց՝ 132 մլրդ ոսկե մարկ։ Գերմանիայում դա խոր դժգոհություն առաջացրեց։"},
+          {t:"Չափավոր վճարումներ", d:"Փոխհատուցումը կապել Գերմանիայի վճարունակության հետ։", fx:{s:10,j:0,p:15,c:-5},
+           note:"Նման տեսակետ ուներ, օրինակ, տնտեսագետ Ջոն Մեյնարդ Քեյնսը, սակայն համաժողովում գերակշռեց խիստ գիծը։"},
+          {t:"Խաղաղություն առանց հաղթանակի", d:"Պայմանագիրը կառուցել առանց փոխհատուցումների՝ Վիլսոնի 1917 թվականի գաղափարով։", fx:{s:0,j:-5,p:5,c:-15},
+           note:"Վիլսոնը 1917 թվականին խոսել էր «խաղաղություն առանց հաղթանակի» մասին, բայց Փարիզում ֆրանսիացիները և բրիտանացիները դա չընդունեցին։"}
+        ]
+      },
+      {
+        title:"Բելգիայի պահանջները", ctx:"Գերմանիան 1914 թվականին ներխուժեց չեզոք Բելգիա։ Երկիրը ծանր տուժել է և կորուստների համար փոխհատուցում է պահանջում։",
+        loc:{lon:4.35,lat:50.85,name:"Բելգիա",lab:[-10,-4,"end"]},
+        options:[
+          {t:"Տարածքներ հարևաններից", d:"Բելգիան ստանում է Նիդերլանդների հողերի մի մասը։", fx:{s:-5,j:-10,p:0,c:-10},
+           note:"Բելգիան իսկապես նման պահանջ ներկայացրեց (Շելդտի գետաբերանի և Լիմբուրգի շուրջ), սակայն դաշնակիցները չաջակցեցին։"},
+          {t:"Փոքր ճշգրտումներ և առաջնահերթ վճարումներ", d:"Բելգիան ստանում է Գերմանիայի երկու փոքր շրջան՝ Էյպեն և Մալմեդի, և առաջնահերթ փոխհատուցում։", fx:{s:5,j:5,p:5,c:5}, real:true,
+           note:"Այսպես էլ եղավ։ Էյպենը և Մալմեդին Բելգիային անցան 1920 թվականի քվեարկությունից հետո, թեև քվեարկության ձևը վիճելի էր։"},
+          {t:"Միայն բարոյական ճանաչում", d:"Բելգիան ստանում է շնորհակալություն և օգնություն վերականգնման համար։", fx:{s:0,j:-10,p:-5,c:5},
+           note:"Այսպիսի տարբերակը չընդունվեց. Բելգիայի կորուստները դարձան փոխհատուցման քննարկման հիմնական փաստարկներից մեկը։"}
+        ]
+      }
+    ]
+  },
+  {
+    name:"Արևելյան Եվրոպա", front:"Արևելյան ճակատ", view:"east", year:1918, focus:"east", role:"Խորհրդական Փարիզի համաժողովում",
+    intro:"Արևելյան ճակատը ձգվում էր Բալթյան ծովից մինչև Սև ծով և շատ ավելի շարժուն էր։ Պատերազմի վերջում փլուզվեցին Ռուսական և Ավստրո-Հունգարական կայսրությունները, իսկ Գերմանիան կորցրեց արևելյան հողերի մի մասը։ Պետք է նոր սահմաններ գծել։",
+    result:"1918–1920 թվականներին Արևելյան Եվրոպայում գծվեց նոր քարտեզ՝ նոր և վերականգնված պետություններով։ Սահմանների մեծ մասը վիճելի մնաց, և նոր պետությունների ներսում մեծ փոքրամասնություններ հայտնվեցին։ 1938–1939 թվականներին այս տարածաշրջանը դարձավ նոր պատերազմի սկզբնակետ։",
+    decisions:[
+      {
+        title:"Լեհաստանի ելքը ծով", ctx:"Լեհաստանը վերականգնվում է 123 տարվա բաժանումից հետո։ Վիլսոնի 14 կետերից 13-րդը նրան խոստացել էր ելք դեպի ծով։",
+        loc:{lon:18.65,lat:54.35,name:"Դանցիգ",lab:[-10,6,"end"]},
+        options:[
+          {t:"Միջանցք և ազատ քաղաք", d:"Լեհաստանին տալ Պոմերանիայի միջանցքը, իսկ Դանցիգը դարձնել Ազգերի լիգայի հովանավորվող ազատ քաղաք։", fx:{s:-5,j:5,p:5,c:5}, real:true,
+           note:"Այսպես էլ եղավ։ Միջանցքը Արևելյան Պրուսիան անջատեց Գերմանիայի մնացած մասից, իսկ Դանցիգը (այժմ՝ Գդանսկ) դարձավ ազատ քաղաք, ինչը հետագայում լարվածության աղբյուր դարձավ։"},
+          {t:"Դանցիգը Լեհաստանին", d:"Լեհաստանին տալ նաև Դանցիգը։", fx:{s:-10,j:0,p:10,c:-10},
+           note:"Քաղաքի բնակչության մեծ մասը գերմանացի էր, ուստի Բրիտանիան դեմ էր։"},
+          {t:"Միայն նավահանգստային իրավունքներ", d:"Լեհաստանը ստանում է Գերմանիայի նավահանգիստների օգտագործման իրավունք՝ առանց հողի։", fx:{s:5,j:-10,p:-5,c:5},
+           note:"Վիլսոնի խոստումը նման լուծում չէր ենթադրում, իսկ Լեհաստանի համար ծովային ելքը ռազմավարական հարց էր։"}
+        ]
+      },
+      {
+        title:"Բալթյան երկրները և Բրեստ-Լիտովսկը", ctx:"1918 թվականի մարտին Ռուսաստանը Բրեստ-Լիտովսկում կորցրեց Լեհաստանը, Բալթյան երկրները և Ուկրաինան։ Գերմանիայի պարտությունից հետո պայմանագիրը չեղարկվեց։",
+        loc:{lon:24.1,lat:56.95,name:"Բալթյան երկրներ",lab:[10,6,"start"]},
+        options:[
+          {t:"Ճանաչել անկախությունը", d:"Էստոնիան, Լատվիան և Լիտվան ճանաչել անկախ պետություններ։", fx:{s:5,j:15,p:0,c:-5}, real:true,
+           note:"Այսպես էլ եղավ, թեև դանդաղ։ Երեք պետություններն էլ հռչակեցին անկախություն 1918 թվականին, պայքարեցին Խորհրդային Ռուսաստանի դեմ, իսկ մեծ տերությունները դրանք ճանաչեցին 1921 թվականին։"},
+          {t:"Միասնական Ռուսաստան", d:"Վերականգնել նախկին կայսրության սահմանները և թույլ տալ Ռուսաստանին որոշել հարցը։", fx:{s:-5,j:-15,p:5,c:5},
+           note:"Դաշնակիցների մի մասը պաշտպանում էր «միասնական և անբաժանելի Ռուսաստանի» գաղափարը (օրինակ՝ սպիտակ շարժման ղեկավարների պես), բայց տեղի ժողովուրդները դրան դեմ էին։"},
+          {t:"Գերմանական ազդեցության գոտի", d:"Թողնել տարածաշրջանը Գերմանիայի վերահսկողության տակ՝ որպես պատնեշ Ռուսաստանի դեմ։", fx:{s:5,j:-10,p:0,c:-15},
+           note:"1918 թվականին Գերմանիան փորձում էր նման համակարգ ստեղծել, բայց պարտությունից հետո այն փլուզվեց, և դաշնակիցները չէին ցանկանում ամրապնդել այն։"}
+        ]
+      },
+      {
+        title:"Ավստրո-Հունգարիայի ճակատագիրը", ctx:"Արևելյան ճակատում պարտվելուց հետո կայսրությունը ներսից քայքայվում է։ Չեխերը, սլովակները, լեհերը, հարավային սլավոնները ստեղծում են իրենց խորհուրդները։",
+        loc:{lon:16.4,lat:48.2,name:"Վիեննա",lab:[-10,6,"end"]},
+        options:[
+          {t:"Ազգային պետություններ", d:"Կայսրության տեղում ստեղծել մի քանի ազգային պետություն։", fx:{s:-5,j:15,p:-10,c:0}, real:true,
+           note:"Այսպես էլ եղավ։ Ստեղծվեցին Ավստրիան, Հունգարիան, Չեխոսլովակիան, իսկ Հարավսլավիան ձևավորվեց Սերբիայի շուրջ։ Նոր պետությունների միջև առևտրային կապերը խզվեցին, և տնտեսությունը տուժեց։"},
+          {t:"Դանուբյան դաշնություն", d:"Պահպանել տարածաշրջանը որպես դաշնություն՝ մեծ ինքնավարությամբ։", fx:{s:5,j:-5,p:10,c:-10},
+           note:"1918 թվականի հոկտեմբերին կայսր Կարլը առաջարկեց դաշնային վերակառուցում, սակայն արդեն ուշ էր։"},
+          {t:"Ավստրիան միանում է Գերմանիային", d:"Գերմանախոս Ավստրիան միացնել Գերմանիային։", fx:{s:-10,j:5,p:5,c:-15},
+           note:"Ավստրիայի ժամանակավոր ժողովը 1918 թվականին հռչակեց երկիրը Գերմանական Հանրապետության մաս, սակայն Սեն-Ժերմենի պայմանագիրը արգելեց միավորումը։"}
+        ]
+      },
+      {
+        title:"Հունգարիայի սահմանները", ctx:"Հունգարիան պատերազմից հետո նոր սահմաններ է ստանալու։ Հարևան պետությունները՝ Չեխոսլովակիան, Ռումինիան և Հարավսլավիան, պահանջում են հողեր։",
+        loc:{lon:19.04,lat:47.5,name:"Բուդապեշտ",lab:[10,6,"start"]},
+        options:[
+          {t:"Էթնիկ սահմաններ և հանրաքվեներ", d:"Սահմանները գծել բնակչության ազգային կազմով և հարցնել մարդկանց կարծիքը։", fx:{s:5,j:15,p:-5,c:-5},
+           note:"Հանրաքվեներ անցկացվեցին միայն մի քանի վայրերում, օրինակ՝ Շոպրոնում 1921 թվականին։ Մնացած սահմանները որոշվեցին առանց քվեարկության։"},
+          {t:"Կոմիսիաների որոշում", d:"Սահմանները որոշել փորձագիտական կոմիսիաներով՝ հաշվի առնելով էթնիկ, ռազմավարական և տնտեսական հարցերը։", fx:{s:-5,j:-10,p:5,c:5}, real:true,
+           note:"Տրիանոնի պայմանագրով (1920 թ.) Հունգարիան կորցրեց իր նախկին տարածքի մոտ երկու երրորդը, և շատ հունգարացիներ հայտնվեցին նոր սահմաններից դուրս։ Սա դարձավ երկարատև դժգոհության աղբյուր։"},
+          {t:"Պահպանել պատմական սահմանները", d:"Հունգարիային թողնել նրա պատմական տարածքը։", fx:{s:-10,j:-15,p:10,c:-10},
+           note:"Դա անհնար էր. սլովակները, ռումինները և սերբերը պահանջում էին իրենց հողերը։"}
+        ]
+      }
+    ]
+  },
+  {
+    name:"Նոր համակարգ", front:"Երկու ճակատները միասին", view:"full", year:1918, focus:"both", role:"Խորհրդական Փարիզի համաժողովում",
+    intro:"Երկու ճակատներից հետո մնացել են ընդհանուր հարցեր՝ Ռուսաստանի դերը, նոր միջազգային կազմակերպությունը և Գերմանիայի տեղը նոր համակարգում։",
+    result:"Համակարգը կախված էր ԱՄՆ-ի մասնակցությունից, որը չեղավ։ Ազգերի լիգան չկարողացավ կանխել 1930-ականների ագրեսիաները, և 1939 թվականին սկսվեց Երկրորդ համաշխարհային պատերազմը։",
+    decisions:[
+      {
+        title:"Ի՞նչ անել Ռուսաստանի հետ", ctx:"Ռուսաստանը ճակատում կռվեց մինչև 1917 թվականը, բայց Փարիզում ներկա չէ։ Երկրում քաղաքացիական պատերազմ է։",
+        loc:{lon:37.6,lat:55.75,name:"Ռուսաստան",lab:[-10,-10,"end"]},
+        options:[
+          {t:"Բանակցել բոլշևիկների հետ", d:"Հրավիրել բոլոր կողմերին բանակցությունների։", fx:{s:5,j:5,p:0,c:-10},
+           note:"1919 թվականի հունվարին առաջարկվեց հանդիպում Պրինկիպո կղզում, բայց սպիտակ կառավարությունները հրաժարվեցին, և առաջարկը մնաց անարդյունք։"},
+          {t:"Սահմանափակ միջամտություն", d:"Աջակցել հակաբոլշևիկյան ուժերին զորքերով և զենքով։", fx:{s:-5,j:-5,p:-5,c:5}, real:true,
+           note:"Այսպես էլ եղավ։ 1918–1920 թվականներին բրիտանական, ֆրանսիական, ամերիկյան և ճապոնական զորքեր հայտնվեցին Ռուսաստանում, սակայն միջամտությունը ձախողվեց և ավարտվեց դուրս գալով։"},
+          {t:"Սանիտարական պատնեշ", d:"Ամրապնդել Ռուսաստանի արևմտյան հարևաններին՝ որպես պատնեշ։", fx:{s:5,j:0,p:0,c:-5},
+           note:"Լեհաստանը, Ռումինիան և Բալթյան երկրները իսկապես դարձան այդպիսի գոտի, բայց դա չվերացրեց Ռուսաստանի և հարևանների միջև լարվածությունը։"}
+        ]
+      },
+      {
+        title:"Ինչպե՞ս պաշտպանել խաղաղությունը", ctx:"Վիլսոնը առաջարկում է համաշխարհային կազմակերպություն։ Ֆրանսիան կարծում է, որ խոսքերը բավարար չեն։",
+        loc:{lon:6.14,lat:46.2,name:"Ժնև",lab:[10,6,"start"]},
+        options:[
+          {t:"Ազգերի լիգա առանց զինված ուժի", d:"Ստեղծել կազմակերպություն, որը որոշումները կայացնում է համաձայնությամբ և կիրառում է պատժամիջոցներ։", fx:{s:5,j:5,p:0,c:5}, real:true,
+           note:"Այսպես էլ եղավ։ Ազգերի լիգան ստեղծվեց Վերսալի պայմանագրով, սակայն ԱՄՆ Սենատը մերժեց պայմանագիրը (1919–1920 թթ.), ուստի Միացյալ Նահանգները Լիգայի անդամ չդարձան։"},
+          {t:"Լիգա սեփական բանակով", d:"Լիգային տալ միջազգային զինված ուժ։", fx:{s:10,j:0,p:-5,c:-10},
+           note:"Ֆրանսիան նման առաջարկ արեց, բայց Բրիտանիան և ԱՄՆ-ը դեմ էին՝ ինքնիշխանությունը սահմանափակելու պատճառով։"},
+          {t:"Եռակողմ երաշխիք Ֆրանսիային", d:"Բրիտանիան և ԱՄՆ-ը երաշխավորում են Ֆրանսիայի անվտանգությունը։", fx:{s:10,j:0,p:0,c:5},
+           note:"1919 թվականին այդպիսի պայմանագիր ստորագրվեց, սակայն ԱՄՆ Սենատը այն չվավերացրեց, և բրիտանական երաշխիքը նույնպես դադարեց գործել։"}
+        ]
+      },
+      {
+        title:"Գերմանիայի տեղը նոր համակարգում", ctx:"Գերմանիան հրավիրված չէ Փարիզի բանակցություններին, և պայմանագիրը նրան ներկայացվում է պատրաստի տեսքով։",
+        loc:{lon:13.4,lat:52.5,name:"Բեռլին",lab:[10,6,"start"]},
+        options:[
+          {t:"Սկզբում դուրս թողնել", d:"Գերմանիան և Խորհրդային Ռուսաստանը Ազգերի լիգայի անդամ չեն։", fx:{s:-5,j:-5,p:0,c:5}, real:true,
+           note:"Այսպես էլ եղավ։ Գերմանիան միացավ Լիգային 1926 թվականին, իսկ ԽՍՀՄ-ը՝ 1934 թվականին։"},
+          {t:"Հրավիրել Գերմանիային", d:"Գերմանիային թույլ տալ մասնակցել բանակցություններին և անդամակցել Լիգային սկզբից։", fx:{s:10,j:10,p:5,c:-10},
+           note:"Ֆրանսիայի հասարակությունը դրան չէր համաձայնի՝ պատերազմի կորուստների պատճառով։"},
+          {t:"Հրավիրել երկուսին էլ", d:"Գերմանիային և Ռուսաստանին հրավիրել նոր համակարգի մեջ։", fx:{s:5,j:5,p:5,c:-15},
+           note:"Բոլշևիկյան Ռուսաստանը չճանաչվեց, իսկ դաշնակիցների մեծ մասը նրան թշնամի էր համարում։"}
+        ]
+      }
+    ]
+  }
+];
+var TOTAL = ACTS.reduce(function(n,a){ return n + a.decisions.length; }, 0);
+
+var READING = [
+  "Margaret MacMillan, Paris 1919 (2001)",
+  "John Maynard Keynes, The Economic Consequences of the Peace (1919)",
+  "Hew Strachan, The First World War (2003)",
+  "Norman Stone, The Eastern Front 1914–1917 (1975)",
+  "Վուդրո Վիլսոնի «14 կետերը» (1918)"
+];
+
+/* ---------- map ---------- */
+function inView(x, y, v){
+  return x > v[0] - 10 && x < v[0] + v[2] + 10 && y > v[1] - 10 && y < v[1] + v[3] + 10;
+}
+function mapSVG(o){
+  o = o || {};
+  var v = VB[o.view || "full"], unit = v[2] / 400, fs = 11.5 * unit;
+  var s = '<svg class="map" viewBox="'+v.join(" ")+'" role="img" aria-label="Եվրոպայի սխեմատիկ քարտեզ" style="--fs:'+fs.toFixed(2)+'px">';
+  s += '<rect class="sea" x="0" y="0" width="720" height="500"></rect>';
+  s += '<polygon class="land" points="'+pts(LAND)+'"></polygon>';
+  s += '<polygon class="sea" points="'+pts(ADRIA)+'"></polygon>';
+  [0,10,20,30,40].forEach(function(lon){
+    var x = P(lon,50)[0];
+    s += '<line class="grat" x1="'+x+'" y1="0" x2="'+x+'" y2="500"></line>';
+    if(o.view === "full" || !o.view){ s += '<text class="gt" x="'+(x+3)+'" y="'+(496)+'">'+lon+'°</text>'; }
+  });
+  [45,50,55,60].forEach(function(lat){
+    var y = P(0,lat)[1];
+    s += '<line class="grat" x1="0" y1="'+y+'" x2="720" y2="'+y+'"></line>';
+    if(o.view === "full" || !o.view){ s += '<text class="gt" x="4" y="'+(y-4)+'">'+lat+'°</text>'; }
+  });
+  if(o.year){
+    var F = FRONTS[o.year], an = o.anim ? " anim" : "";
+    var dw = o.focus === "east" ? " dim" : "", de = o.focus === "west" ? " dim" : "";
+    s += '<polyline class="fl fw'+dw+an+'" pathLength="1" points="'+pts(F.w)+'"></polyline>';
+    s += '<polyline class="fl fe'+de+an+'" pathLength="1" points="'+pts(F.e)+'"></polyline>';
+  }
+  if(o.labels){
+    (o.labels === "post" ? COUNTRIES_POST : COUNTRIES_PRE).forEach(function(c){
+      var q = P(c.lon, c.lat);
+      if(inView(q[0], q[1], v)){
+        s += '<text class="cl'+(o.labels === "post" ? " post" : "")+'" x="'+q[0].toFixed(1)+'" y="'+q[1].toFixed(1)+'">'+c.n+'</text>';
+      }
+    });
+  }
+  if(o.marks){
+    MARKS.forEach(function(m, i){
+      var q = P(m.lon, m.lat);
+      if(!inView(q[0], q[1], v)) return;
+      var sel = o.sel === i;
+      s += '<g class="mk" tabindex="0" role="button" aria-label="'+m.n+'" data-act="mk" data-v="'+i+'">'+
+        '<circle class="hitarea" cx="'+q[0].toFixed(1)+'" cy="'+q[1].toFixed(1)+'" r="'+(16*unit).toFixed(1)+'"></circle>'+
+        '<circle class="dot '+m.f+'" cx="'+q[0].toFixed(1)+'" cy="'+q[1].toFixed(1)+'" r="'+((sel?7:5)*unit).toFixed(1)+'"></circle>'+
+        (sel ? '<circle class="ring" cx="'+q[0].toFixed(1)+'" cy="'+q[1].toFixed(1)+'" r="'+(11*unit).toFixed(1)+'"></circle>' : '')+
+        '<text x="'+(q[0]+m.lab[0]*unit).toFixed(1)+'" y="'+(q[1]+m.lab[1]*unit).toFixed(1)+'" text-anchor="'+m.lab[2]+'">'+m.n+'</text></g>';
+    });
+  }
+  if(o.hi){
+    var h = o.hi, hq = P(h.lon, h.lat);
+    s += '<circle class="pulse" cx="'+hq[0].toFixed(1)+'" cy="'+hq[1].toFixed(1)+'" r="'+(9*unit).toFixed(1)+'"></circle>';
+    s += '<circle class="dot hit" cx="'+hq[0].toFixed(1)+'" cy="'+hq[1].toFixed(1)+'" r="'+(5.5*unit).toFixed(1)+'"></circle>';
+    s += '<text x="'+(hq[0]+h.lab[0]*unit).toFixed(1)+'" y="'+(hq[1]+h.lab[1]*unit).toFixed(1)+'" text-anchor="'+h.lab[2]+'" style="font-weight:600">'+h.name+'</text>';
+  }
+  if(o.results){
+    o.results.forEach(function(r){
+      var rq = P(r.loc.lon, r.loc.lat);
+      s += '<circle class="dot '+(r.match ? "match" : "miss")+'" cx="'+rq[0].toFixed(1)+'" cy="'+rq[1].toFixed(1)+'" r="'+(6*unit).toFixed(1)+'"></circle>';
+      s += '<text x="'+(rq[0]+r.loc.lab[0]*unit).toFixed(1)+'" y="'+(rq[1]+r.loc.lab[1]*unit).toFixed(1)+'" text-anchor="'+r.loc.lab[2]+'">'+r.loc.name+'</text>';
+    });
+  }
+  return s + '</svg>';
+}
+function mapBox(o){ return '<div class="mapbox">'+mapSVG(o)+'</div>'; }
+function frontLegend(extra){
+  return '<div class="legend-row"><span class="lg"><i class="sw w"></i>Արևմտյան ճակատ</span><span class="lg"><i class="sw e"></i>Արևելյան ճակատ</span>'+(extra||"")+'</div>'+
+    '<p class="fine">Սխեմատիկ քարտեզ. ճակատի գծերը և սահմանները մոտավոր են։</p>';
+}
+
+/* ---------- state ---------- */
+var app = document.getElementById("app");
+var S = fresh();
+
+function fresh(){
+  return {screen:"start", act:0, dec:0, m:zero(), prev:zero(), picked:null, history:[], actAvg:[], mapY:1914, post:false, sel:null, anim:true};
+}
+function zero(){ return {s:50,j:50,p:50,c:50}; }
+function clamp(v){ return Math.max(0, Math.min(100, v)); }
+function avg(m){ return Math.round((m.s+m.j+m.p+m.c)/4); }
+function curAct(){ return ACTS[S.act]; }
+function cur(){ return ACTS[S.act].decisions[S.dec]; }
+
+function meters(from, to){
+  return '<div class="meters">' + METERS.map(function(x){
+    return '<div class="m"><div class="m-top"><span>'+x.n+'</span><b>'+to[x.k]+'</b></div>'+
+           '<div class="bar"><i style="width:'+from[x.k]+'%" data-to="'+to[x.k]+'"></i></div></div>';
+  }).join("") + '</div>';
+}
+function verdictOf(a){
+  if(a >= 62) return "Կայուն խաղաղություն";
+  if(a >= 50) return "Փխրուն համաձայնություն";
+  return "Հաջորդ պատերազմի սերմեր";
+}
+function overallTitle(a){
+  if(a >= 62) return "Խաղաղության ճարտարապետ";
+  if(a >= 50) return "Զգույշ դիվանագետ";
+  return "Քարտեզի վրա շտապող ձեռք";
+}
+function extremes(m){
+  var hi = METERS[0], lo = METERS[0];
+  METERS.forEach(function(x){
+    if(m[x.k] > m[hi.k]) hi = x;
+    if(m[x.k] < m[lo.k]) lo = x;
+  });
+  return {hi:hi, lo:lo};
+}
+
+/* ---------- screens ---------- */
+function screenStart(){
+  return '<div class="sheet"><div class="label">Պատմական ռազմավարական խաղ</div>'+
+    '<h1>Աշխարհի վերաձևումը</h1>'+
+    '<div class="label">Առաջին համաշխարհային պատերազմից հետո</div>'+
+    mapBox({view:"full", year:1916, labels:"pre", anim:S.anim})+
+    '</div>'+
+    '<p>1918 թվականին թնդանոթները լռեցին Արևմտյան և Արևելյան ճակատներում, բայց քարտեզը դեռ պետք էր նոր գծել։ Դու Փարիզի խաղաղության համաժողովի խորհրդականն ես։ Կայացրու '+TOTAL+' որոշում և համեմատիր դրանք այն բանի հետ, ինչ իրականում տեղի ունեցավ։</p>'+
+    '<ol class="acts">'+ACTS.map(function(a, i){
+      return '<li><span class="y">Մաս '+(i+1)+'</span><span><b>'+a.name+'</b><span class="soft">'+a.front+' · '+a.decisions.length+' որոշում</span></span></li>';
+    }).join("")+'</ol>'+
+    '<div class="card"><h3>Խաղաղության չորս հիմքը</h3><dl class="legend">'+
+      '<div><dt>Կայունություն</dt><dd>Նոր պատերազմի վտանգը նվազում է։</dd></div>'+
+      '<div><dt>Արդարություն</dt><dd>Պայմանագիրն ընկալվում է որպես արդար։</dd></div>'+
+      '<div><dt>Բարգավաճում</dt><dd>Տնտեսությունները վերականգնվում են։</dd></div>'+
+      '<div><dt>Համաձայնություն</dt><dd>Մեծ տերությունները պահպանում են համակարգը։</dd></div>'+
+    '</dl></div>'+
+    '<button class="btn" data-act="begin-act">Սկսել խաղը</button>'+
+    '<button class="btn ghost" data-act="open-map">Տեսնել ճակատների քարտեզը</button>'+
+    '<details><summary>Նախագծի մասին</summary>'+
+      '<p class="fine" style="margin-top:10px">Խաղը ներկայացնում է Առաջին համաշխարհային պատերազմից հետո Արևմտյան և Արևելյան Եվրոպայի կարգավորումները և համեմատում է քո ընտրությունները այն բանի հետ, ինչ իրականում տեղի է ունեցել։ Ցուցանիշների արժեքները պայմանական են և արտահայտում են պատմաբանների մեկնաբանությունները, ոչ թե ճշգրիտ չափումներ։ Քարտեզը սխեմատիկ է։</p>'+
+      '<p class="label" style="margin-top:12px">Լրացուցիչ ընթերցանություն</p>'+
+      '<ul>'+READING.map(function(r){return '<li>'+r+'</li>';}).join("")+'</ul>'+
+    '</details>';
+}
+
+function screenMap(){
+  var sel = S.sel !== null ? MARKS[S.sel] : null;
+  return '<div class="label">Ճակատների քարտեզ</div>'+
+    '<h2>Արևմտյան և Արևելյան ճակատները</h2>'+
+    '<div class="tabs" role="group" aria-label="Տարի">'+
+      [1914,1916,1918].map(function(y){
+        return '<button class="tab" data-act="yr" data-v="'+y+'" aria-pressed="'+(S.mapY===y)+'">'+y+'</button>';
+      }).join("")+
+      '<button class="tab" data-act="post" aria-pressed="'+S.post+'">1919–1923 քարտեզ</button>'+
+    '</div>'+
+    mapBox({view:"full", year:S.mapY, labels:S.post ? "post" : "pre", marks:true, sel:S.sel, anim:S.anim})+
+    frontLegend('<span class="lg"><i class="sw d"></i>Ճակատամարտ</span>')+
+    '<p class="soft">'+YEAR_TEXT[S.mapY]+'</p>'+
+    '<div class="card'+(sel ? ' ink' : '')+'">'+(sel
+      ? '<span class="label">'+(sel.f === "w" ? "Արևմտյան ճակատ" : "Արևելյան ճակատ")+'</span><p>'+sel.t+'</p>'
+      : '<p class="soft">Սեղմիր քարտեզի կետերին՝ ճակատամարտերի մասին կարդալու համար։</p>')+'</div>'+
+    '<button class="btn" data-act="begin-act">Սկսել խաղը</button>'+
+    '<button class="btn ghost" data-act="to-start">Վերադառնալ</button>';
+}
+
+function screenActIntro(){
+  var a = curAct();
+  return '<div class="label">Մաս '+(S.act+1)+' / '+ACTS.length+'</div>'+
+    '<div class="sheet"><div class="label">'+a.front+'</div><h2>'+a.name+'</h2>'+
+      mapBox({view:a.view, year:a.year, focus:a.focus, labels:"pre", anim:true})+
+    '</div>'+
+    frontLegend()+
+    '<p>'+a.intro+'</p>'+
+    '<div class="card"><span class="label">Քո դերը</span><strong>'+a.role+'</strong></div>'+
+    '<button class="btn" data-act="begin-dec">Սկսել նիստը</button>';
+}
+
+function screenDecision(){
+  var a = curAct(), d = cur();
+  return '<div class="progress label"><span>'+a.name+'</span><span>Որոշում '+(S.dec+1)+' / '+a.decisions.length+'</span></div>'+
+    '<div><h2>'+d.title+'</h2><p class="soft" style="margin-top:6px">'+d.ctx+'</p></div>'+
+    mapBox({view:a.view, year:a.year, focus:a.focus, labels:"pre", hi:d.loc})+
+    '<div class="opts">'+d.options.map(function(o,i){
+      return '<button class="opt" data-act="pick" data-v="'+i+'"><span class="k">'+LETTERS[i]+'</span>'+
+        '<span><strong>'+o.t+'</strong><span class="d">'+o.d+'</span></span></button>';
+    }).join("")+'</div>'+
+    '<div class="card">'+meters(S.m, S.m)+'</div>';
+}
+
+function screenOutcome(){
+  var a = curAct(), d = cur(), o = d.options[S.picked];
+  var chips = METERS.map(function(x){
+    var diff = S.m[x.k] - S.prev[x.k];
+    if(!diff) return "";
+    return '<span class="chip '+(diff>0?'up':'down')+'">'+(diff>0?'+':'−')+Math.abs(diff)+' '+x.n+'</span>';
+  }).join("");
+  var realOpt = null;
+  d.options.forEach(function(x){ if(x.real) realOpt = x; });
+  var tag = o.real
+    ? '<span class="tag match">Համընկնում է պատմության հետ</span>'
+    : '<span class="tag">Տարբերվում է պատմությունից</span>';
+  var realLine = o.real ? "" : '<p class="fine">Իրականում ընտրվել է մոտավորապես այս տարբերակը՝ «'+realOpt.t+'»։</p>';
+  return '<div class="progress label"><span>'+a.name+'</span><span>Որոշում '+(S.dec+1)+' / '+a.decisions.length+'</span></div>'+
+    '<div class="card ink"><span class="label">Քո որոշումը</span><h3>'+o.t+'</h3><p class="soft">'+o.d+'</p>'+
+      '<div class="chips">'+(chips||'<span class="label">Ցուցանիշները չփոխվեցին</span>')+'</div></div>'+
+    mapBox({view:a.view, year:a.year, focus:a.focus, labels:"post", hi:d.loc})+
+    '<div class="card"><span class="label">Ինչ եղավ իրականում</span>'+tag+'<p>'+o.note+'</p>'+realLine+'</div>'+
+    '<div class="card">'+meters(S.prev, S.m)+'</div>'+
+    '<button class="btn" data-act="next">'+(S.dec < a.decisions.length-1 ? "Շարունակել" : "Ավարտել նիստը")+'</button>';
+}
+
+function screenActEnd(){
+  var a = curAct(), v = avg(S.m), ex = extremes(S.m);
+  var last = S.act === ACTS.length-1;
+  return '<div class="label">Նիստն ավարտվեց</div>'+
+    '<div class="sheet"><div class="label">'+a.front+'</div><h2>'+a.name+'</h2>'+
+      mapBox({view:a.view, year:a.year, focus:a.focus, labels:"post"})+
+    '</div>'+
+    '<div class="card ink"><span class="label">Քո կարգավորումը</span>'+
+      '<div class="verdict">'+verdictOf(v)+'</div>'+
+      '<p class="soft">Միջին ցուցանիշը՝ <b>'+v+'</b> / 100։ Ամենաուժեղը՝ '+ex.hi.n+', ամենաթույլը՝ '+ex.lo.n+'։</p>'+
+      meters(S.m, S.m)+'</div>'+
+    '<div class="card"><span class="label">Ինչ եղավ իրականում</span><p>'+a.result+'</p></div>'+
+    '<button class="btn" data-act="next-act">'+(last ? "Տեսնել արդյունքը" : "Հաջորդ մասը")+'</button>';
+}
+
+function screenFinal(){
+  var total = S.actAvg.reduce(function(x,y){return x+y;},0);
+  var v = Math.round(total / S.actAvg.length);
+  var matches = S.history.filter(function(h){return h.real;}).length;
+  var results = S.history.map(function(h){
+    return {loc:ACTS[h.act].decisions[h.dec].loc, match:h.real};
+  });
+  var recap = ACTS.map(function(a, ai){
+    var rows = S.history.filter(function(h){return h.act===ai;}).map(function(h){
+      var d = a.decisions[h.dec], o = d.options[h.pick], r = null;
+      d.options.forEach(function(x){ if(x.real) r = x; });
+      return '<li><b>'+d.title+'</b><br>Դու ընտրեցիր՝ '+o.t+'։ '+
+        (h.real ? 'Համընկնում է պատմության հետ։' : 'Իրականում՝ '+r.t+'։')+'</li>';
+    }).join("");
+    return '<details><summary>'+a.name+' · '+verdictOf(S.actAvg[ai])+' ('+S.actAvg[ai]+')</summary><ul>'+rows+'</ul></details>';
+  }).join("");
+  return '<div class="sheet"><div class="label">Արդյունք</div>'+
+      '<div class="verdict">'+overallTitle(v)+'</div>'+
+      '<p>Երեք մասերի միջին ցուցանիշը՝ <b>'+v+'</b> / 100։ Քո ընտրությունները համընկան պատմության հետ <b>'+matches+'</b> դեպքում '+TOTAL+'-ից։</p></div>'+
+    '<div><h3>Քո որոշումները քարտեզի վրա</h3></div>'+
+    mapBox({view:"full", labels:"post", results:results})+
+    '<div class="legend-row"><span class="lg"><i class="sw d"></i>Համընկնում է պատմության հետ</span><span class="lg"><i class="sw o"></i>Տարբերվում է</span></div>'+
+    '<div class="card"><h3>Մասերի համեմատություն</h3>'+
+      ACTS.map(function(a,i){
+        return '<div><div class="m-top"><span>'+a.name+'</span><b>'+S.actAvg[i]+'</b></div><div class="bar"><i style="width:0" data-to="'+S.actAvg[i]+'"></i></div></div>';
+      }).join("")+'</div>'+
+    '<div>'+recap+'</div>'+
+    '<div class="card"><span class="label">Եզրակացություն</span><p>Պատմաբանների շատ մեկնաբանություններում ամենադիմացկուն կարգավորումներն այն էին, որոնք միաժամանակ հաշվի էին առնում անվտանգությունը, պարտվածի ներառումը համակարգում և տնտեսական վերականգնումը։ Մեկ գործոնի վրա կառուցված խաղաղությունները հաճախ կարճ տևեցին։</p></div>'+
+    '<button class="btn" data-act="restart">Խաղալ նորից</button>';
+}
+
+/* ---------- render ---------- */
+function render(keepScroll){
+  var html = "";
+  switch(S.screen){
+    case "start": html = screenStart(); break;
+    case "map": html = screenMap(); break;
+    case "actIntro": html = screenActIntro(); break;
+    case "decision": html = screenDecision(); break;
+    case "outcome": html = screenOutcome(); break;
+    case "actEnd": html = screenActEnd(); break;
+    case "final": html = screenFinal(); break;
+  }
+  app.innerHTML = html;
+  if(!keepScroll){ window.scrollTo(0, 0); }
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      var bars = app.querySelectorAll(".bar i");
+      for(var i=0;i<bars.length;i++){ bars[i].style.width = bars[i].getAttribute("data-to") + "%"; }
+    });
+  });
+  try{ if(window.claude && window.claude.hot && window.claude.hot.snapshot){ window.claude.hot.snapshot(function(){ return {S:S}; }); } }catch(e){}
+}
+
+function act(name, v){
+  var keep = false;
+  S.anim = true;
+  if(name === "begin-act"){ S.act = 0; S.history = []; S.actAvg = []; S.screen = "actIntro"; }
+  else if(name === "open-map"){ S.screen = "map"; S.sel = null; }
+  else if(name === "to-start"){ S.screen = "start"; }
+  else if(name === "yr"){ S.mapY = parseInt(v, 10); S.sel = null; keep = true; }
+  else if(name === "post"){ S.post = !S.post; S.anim = false; keep = true; }
+  else if(name === "mk"){ var i = parseInt(v, 10); S.sel = (S.sel === i) ? null : i; S.anim = false; keep = true; }
+  else if(name === "begin-dec"){ S.m = zero(); S.prev = zero(); S.dec = 0; S.screen = "decision"; }
+  else if(name === "pick"){
+    var idx = parseInt(v, 10), o = cur().options[idx];
+    S.prev = {s:S.m.s, j:S.m.j, p:S.m.p, c:S.m.c};
+    METERS.forEach(function(x){ S.m[x.k] = clamp(S.m[x.k] + o.fx[x.k]); });
+    S.picked = idx;
+    S.history.push({act:S.act, dec:S.dec, pick:idx, real:!!o.real});
+    S.screen = "outcome";
+  }
+  else if(name === "next"){
+    if(S.dec < curAct().decisions.length - 1){ S.dec += 1; S.screen = "decision"; }
+    else { S.actAvg.push(avg(S.m)); S.screen = "actEnd"; }
+  }
+  else if(name === "next-act"){
+    if(S.act < ACTS.length - 1){ S.act += 1; S.screen = "actIntro"; }
+    else { S.screen = "final"; }
+  }
+  else if(name === "restart"){ S = fresh(); }
+  render(keep);
+}
+
+app.addEventListener("click", function(e){
+  var b = e.target.closest("[data-act]");
+  if(!b) return;
+  act(b.getAttribute("data-act"), b.getAttribute("data-v"));
+});
+app.addEventListener("keydown", function(e){
+  if(e.key !== "Enter" && e.key !== " ") return;
+  var g = e.target.closest ? e.target.closest(".mk") : null;
+  if(!g) return;
+  e.preventDefault();
+  act("mk", g.getAttribute("data-v"));
+});
+
+function start(data){
+  try{ if(data && data.S && data.S.m && data.S.screen){ S = data.S; } }catch(e){}
+  render(true);
+}
+if(window.claude && window.claude.hot && window.claude.hot.ready){ window.claude.hot.ready(start); }
+else { start((window.claude && window.claude.hot && window.claude.hot.data) || {}); }
+</script>
+
+</body></html>
